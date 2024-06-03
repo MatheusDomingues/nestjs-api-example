@@ -1,0 +1,1 @@
+export const ROUTE_PUBLIC_KEY = 'a275c48fda1140b3333ae855bd767da4fb0788fb74de313d0e14aa1155a38a49';

@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Build docker image
+        run: docker build --build-arg NODE_ENV=${{env.NODE_ENV}} --build-arg PORT=${{env.PORT}} --build-arg POSTGRES_URL=${{env.POSTGRES_URL}} --build-arg LOGGERS=${{env.LOGGERS}} --build-arg JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}} --build-arg JWT_VALIDATE=${{env.JWT_VALIDATE}} -t sportiva-api .
+      - name: Add tag to docker image
+        run: docker tag sportiva-api:latest ${{secrets.DOCKER_USERNAME}}/sportiva-api:latest
+      - name: Publish image to docker hub
+        run: docker push ${{secrets.DOCKER_USERNAME}}/sportiva-api:latest
+
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull ${{secrets.DOCKER_USERNAME}}/sportiva-api:latest
+      - name: Delete old container
+        run: docker rm -f sportiva-api-container
+      - name: Run docker container
+        run: docker run -d -p 5000:5000 --name sportiva-api-container sportiva-api

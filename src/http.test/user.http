@@ -1,0 +1,26 @@
+### BUSCAR TODOS OS USUÁRIOS
+GET http://localhost:8000/api/v1/users
+
+### BUSCAR UM USUÁRIO
+GET http://localhost:8000/api/v1/users/2
+
+### CRIAR UM NOVO USUÁRIO
+POST http://localhost:8000/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "johndoe@email.com"
+}
+
+### ATUALIZAR USUÁRIO
+PUT http://localhost:8000/api/v1/users/2
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "johndoe@email.com"
+}
+
+### DELETAR USUÁRIO
+DELETE  http://localhost:8000/api/v1/users/1
